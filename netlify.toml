@@ -1,0 +1,37 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+  
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+
+[functions]
+  node_bundler = "esbuild"
+
+# Keep the same /api/* paths the frontend already calls (src/components/*.tsx,
+# src/App.tsx) so no client code needed to change -- just point them at the
+# Netlify Functions that replaced the old Express routes.
+[[redirects]]
+  from = "/api/status"
+  to = "/.netlify/functions/status"
+  status = 200
+
+[[redirects]]
+  from = "/api/validate-key"
+  to = "/.netlify/functions/validate-key"
+  status = 200
+
+[[redirects]]
+  from = "/api/run-sandbox"
+  to = "/.netlify/functions/run-sandbox"
+  status = 200
+
+# SPA fallback: any other unmatched path serves index.html so client-side
+# routing (if added later) doesn't 404 on refresh/deep links.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
